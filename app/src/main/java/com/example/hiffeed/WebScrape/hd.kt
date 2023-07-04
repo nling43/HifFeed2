@@ -16,7 +16,7 @@ class hd {
             val document: Document = Jsoup.connect(url).get()
             val articleElements: List<Element> = document.select("article")
 
-                for (i in 0 until 10 ) {
+                for (i in 0 until 5 ) {
                     val articleElement = articleElements[i]
 
                     val heading = articleElement.getElementsByClass("prose-title").text().toString()
@@ -24,15 +24,13 @@ class hd {
                     val link = "https://www.hd.se"+articleElement.select("a").attr("href").toString()
                     val img = articleElement.select("img").attr("data-src").toString()
                     var date = articleElement.select("a").attr("href").substring(1,11)
-
-
                         val webpage: Document = Jsoup.connect(link).get()
                         date += " " + webpage.select("time").text().toString()
                             .substring(webpage.select("time").text().toString().length - 5);
 
 
 
-                    list.add(NewsItem(heading,text,date,"hd.se",img, link))
+                    list.add(NewsItem(heading,text,date,"hd",img, link))
 
                 }
 

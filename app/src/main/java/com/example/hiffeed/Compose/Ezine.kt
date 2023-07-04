@@ -82,6 +82,11 @@ private fun WebView.injectCSS(background: Color, foreground: Color) {
 	background-color: $backgroundCss;
 
 }
+body {
+	color: $foregroundCss;
+	background-color: $backgroundCss;
+
+}
 .forum__message-header a {
 	color: $foregroundCss;
 }
@@ -99,11 +104,20 @@ private fun WebView.injectCSS(background: Color, foreground: Color) {
 	display: none;
 	height: 0px;
 }
-.forum__quote::before {
-	color: $backgroundCss;
-	background-color: $backgroundCss;
-}
 
+.ijjjNG{
+	background-color: $foregroundCss;
+    padding:0;
+}
+.ijjjNG::before{
+	background-color: $backgroundCss;
+    padding:0;
+}
+button {
+	background: $backgroundCss;
+    padding:0;
+    border : 0;
+}
 .forum__next-game,
 .forum__info,
 header,

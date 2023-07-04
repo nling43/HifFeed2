@@ -116,14 +116,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
                         )
 
-                        Text(text = newsItem.date,
-                            style = MaterialTheme.typography.caption,
-                            fontSize = 11.sp,
-                            modifier= Modifier.fillMaxWidth().weight(0.2F)
 
-
-
-                        )
                     }
 
 

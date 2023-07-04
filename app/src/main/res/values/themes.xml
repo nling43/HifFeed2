@@ -3,5 +3,6 @@
 
     <style name="Theme.HifFeed" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:navigationBarColor" >@color/purple_700</item>
     </style>
 </resources>
