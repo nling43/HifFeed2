@@ -1,8 +1,8 @@
 package com.example.hiffeed.Compose
 
-import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.view.ViewGroup
-import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.startActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 
 @Composable
 fun ezine() {
@@ -49,6 +50,13 @@ fun ezine() {
                         isLoading = false
                     }
                 }
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String): Boolean {
+                    if (!url.contains("https://www.svenskafans.com/")) {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        return true
+                    }
+                    return false
+                }
             }
 
             loadUrl(url)
@@ -59,7 +67,9 @@ fun ezine() {
     if (isLoading) {
         // Show loading screen while WebView is loading
         Box(
-            modifier = Modifier.fillMaxSize().background(background),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(background),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
@@ -73,52 +83,28 @@ private fun WebView.injectCSS(background: Color, foreground: Color) {
     val foregroundCss = "rgb(${(foreground.red * 255).toInt()},${(foreground.green * 255).toInt()},${(foreground.blue * 255).toInt()});"
 
     val cssStyles = """
-          html {
-	color-scheme: dark;
+         
+html, body, :not([style*="background-color:"]):not(iframe) {
+  background-color: $backgroundCss !important;
 }
-
+:not([style*="border-color:"]), ::before, ::after {
+  border-color: rgb(80, 115, 134) !important;
+}
+html, body, :not([style*="color:"]), .sr-reader :not([class*="sr-pivot"]) {
+  color: $foregroundCss !important;
+}
 * {
-	color: $foregroundCss;
-	background-color: $backgroundCss;
-
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
-body {
-	color: $foregroundCss;
-	background-color: $backgroundCss;
-
-}
-.forum__message-header a {
-	color: $foregroundCss;
-}
-.forum__message-body button {
-	color: $foregroundCss;
-}
-.forum__message {
-	background-color: $backgroundCss;
-}
-.forum__quote {
-	background-color: $backgroundCss;
-}
-.ad-slot {
-	background-color: $backgroundCss;
-	display: none;
-	height: 0px;
+.ijjjNG::before {
+    display: none !important;
 }
 
-.ijjjNG{
-	background-color: $foregroundCss;
-    padding:0;
-}
-.ijjjNG::before{
-	background-color: $backgroundCss;
-    padding:0;
-}
-button {
-	background: $backgroundCss;
-    padding:0;
-    border : 0;
-}
+
+
 .forum__next-game,
+.ad-slot,
 .forum__info,
 header,
 footer,
@@ -128,10 +114,9 @@ footer,
 .widget,
 form,
 .forum__heading,
-font,
-forum__message--edited {
-	display: none;
-	height: 0px;
+font,b {
+	background-color: $backgroundCss;
+	display: none; 
 }
  """.trimIndent()
 
@@ -150,3 +135,6 @@ forum__message--edited {
         null
     )
 }
+
+
+

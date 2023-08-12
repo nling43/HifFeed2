@@ -10,12 +10,12 @@ object Constants {
         BottomNavItem(
             label = "News",
             route = "news",
-                    icon = Icons.Default.Home,
+            icon = R.drawable.news,
         ),
         BottomNavItem(
             label = "Ezine",
             route = "ezine",
-                    icon = Icons.Filled.Home,
+            icon = R.drawable.forum,
 
             )
     )

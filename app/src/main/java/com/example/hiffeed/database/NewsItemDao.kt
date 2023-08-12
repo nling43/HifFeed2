@@ -23,7 +23,8 @@ interface NewsItemDao {
     fun getFirst(): LiveData<NewsItem>
 
     @Query("DELETE FROM newsTable")
-    suspend fun clearDb()
+    fun clearDb()
+
     @Query("SELECT * FROM newsTable ORDER BY date ASC LIMIT 1")
     fun getLast(): LiveData<NewsItem>
 

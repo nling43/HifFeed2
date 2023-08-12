@@ -1,15 +1,16 @@
 package com.example .hiffeed.database
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.hiffeed.WebScrape.RssFeed
 import com.example.hiffeed.WebScrape.hd
+import com.example.hiffeed.database.AppDatabase
+import com.example.hiffeed.database.NewsItem
+import com.example.hiffeed.database.NewsItemDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ class NewsRepository(application: Application) {
     fun update() {
         isRefreshing.update { true };
         clearDb()
-            fromEmpty()
+        fromEmpty()
 
     }
 
