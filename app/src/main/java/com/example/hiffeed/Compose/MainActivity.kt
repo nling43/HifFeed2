@@ -1,16 +1,16 @@
-package com.example.hiffeed
+package com.example.hiffeed.Compose
 
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -18,26 +18,26 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.hiffeed.Compose.NewsScreen
-import com.example.hiffeed.Compose.ezine
-import com.example.hiffeed.database.ViewModel
+import com.example.hiffeed.Compose.Stats.stats
+import com.example.hiffeed.database.MessageAndNews.Message.ForumViewModel
+import com.example.hiffeed.database.MessageAndNews.News.NewsViewModel
+import com.example.hiffeed.database.Stats.PlayerViewModel
 import com.example.hiffeed.ui.theme.HifFeedTheme
 
 class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val viewModel: ViewModel by viewModels()
-        viewModel.update()
-
-
+        val newsViewModel: NewsViewModel by viewModels()
+        val forumViewModel: ForumViewModel by viewModels()
+        val playerViewModel: PlayerViewModel by viewModels()
+        newsViewModel.update()
+        forumViewModel.update()
         super.onCreate(savedInstanceState)
         setContent {
             HifFeedTheme {
@@ -49,12 +49,17 @@ class MainActivity : ComponentActivity() {
                     // get recreated on recomposition
                     val navController = rememberNavController()
 
-                    Surface(color = Color.White) {
+                    Surface(color = MaterialTheme.colors.background) {
                         Scaffold(
-                            bottomBar = {
-                                BottomNavigationBar(navController = navController)
-                            }, content = { padding ->
-                                NavHostContainer(navController = navController, viewModel = viewModel, padding)
+                            bottomBar = { BottomNavigationBar(navController = navController) },
+                            content = { padding ->
+                                NavHostContainer(
+                                    navController = navController,
+                                    newsViewModel = newsViewModel,
+                                    forumViewModel = forumViewModel,
+                                    playerViewModel =playerViewModel,
+                                    padding = padding
+                                )
                             }
                         )
 
@@ -63,14 +68,16 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-
     }
 
     @Composable
     fun NavHostContainer(
         navController: NavHostController,
-        viewModel: ViewModel,
+        newsViewModel: NewsViewModel,
+        playerViewModel:PlayerViewModel,
+        forumViewModel: ForumViewModel,
         padding: PaddingValues
+
     ) {
 
         NavHost(
@@ -79,24 +86,32 @@ class MainActivity : ComponentActivity() {
             // set the start destination as home
             startDestination = "news",
 
-            modifier = Modifier.padding(paddingValues = padding),
+            modifier = Modifier
+                .padding(paddingValues = padding)
+                .background(MaterialTheme.colors.background),
             builder = {
 
                 composable("news") {
-                    NewsScreen(viewModel)
+                    NewsScreen(newsViewModel)
                 }
 
                 composable("ezine") {
-                    ezine()
+                    ezine(forumViewModel)
+                }
+
+                composable("stats") {
+                    stats(playerViewModel)
                 }
 
             })
 
     }
+
     @Composable
     fun BottomNavigationBar(navController: NavHostController) {
         BottomNavigation(
-            backgroundColor = MaterialTheme.colors.background) {
+            backgroundColor = MaterialTheme.colors.background
+        ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
             Constants.BottomNavItems.forEach { navItem ->
@@ -104,16 +119,11 @@ class MainActivity : ComponentActivity() {
                     selected = currentRoute == navItem.route,
                     onClick = {
                         navController.navigate(navItem.route)
+
                     },
-                    icon = {
-                        Icon( painter = painterResource(id = navItem.icon),
-                            contentDescription = null // decorative element
-                        )
-                    },
-                    label = {
-                        Text(text = navItem.label)
-                    },
-                    alwaysShowLabel = false
+                    icon= {Text(navItem.label) },
+
+
                 )
             }
         }

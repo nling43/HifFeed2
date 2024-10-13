@@ -2,7 +2,7 @@ package com.example.hiffeed.WebScrape
 
 import android.text.Html
 import android.util.Log
-import com.example.hiffeed.database.NewsItem
+import com.example.hiffeed.database.MessageAndNews.News.NewsItem
 import com.jcabi.xml.XMLDocument
 import fuel.Fuel
 import fuel.get
@@ -26,7 +26,7 @@ class RssFeed {
                 val pubDates = xml.nodes("//item/pubDate")
                 val descriptions = xml.nodes("//item/description")
 
-                for (i in 0 until 5) {
+                for (i in 0 until 10) {
                     var header = titles[i].toString().replace("<\\/?(title)>".toRegex(), "").trim()
                     if(header.contains("<![CDATA[")){
                         header =extractHeader(titles[i].toString())

@@ -1,8 +1,7 @@
-package com.example.hiffeed
+package com.example.hiffeed.Compose
 
 
 data class BottomNavItem(
     val label: String,
-    val icon: Int,
     val route:String,
 )

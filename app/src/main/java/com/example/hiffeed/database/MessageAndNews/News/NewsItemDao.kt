@@ -1,4 +1,4 @@
-package com.example.hiffeed.database
+package com.example.hiffeed.database.MessageAndNews.News
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

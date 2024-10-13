@@ -1,11 +1,10 @@
 package com.example.hiffeed.WebScrape
 
 import android.util.Log
-import com.example.hiffeed.database.NewsItem
+import com.example.hiffeed.database.MessageAndNews.News.NewsItem
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import java.time.LocalDate
 
 class hd {
     private val url ="https://www.hd.se/story/9ef9ff08-82a5-421c-aa1f-e8db7a2e65d4";
@@ -20,7 +19,7 @@ class hd {
                     val articleElement = articleElements[i]
 
                     val heading = articleElement.getElementsByClass("prose-title").text().toString()
-                    val text = articleElement.getElementsByClass("txt-body").text().toString()
+                    val text = articleElement.getElementsByClass("teaser__standfirst txt-ui").text().toString()
                     val link = "https://www.hd.se"+articleElement.select("a").attr("href").toString()
                     val img = articleElement.select("img").attr("data-src").toString()
                     var date = articleElement.select("a").attr("href").substring(1,11)
@@ -35,7 +34,7 @@ class hd {
                 }
 
         } catch (e: Exception) {
-            Log.e("webscrape failure hd", e.toString())
+            Log.e("WebScrape", e.toString())
             return list
 
 
