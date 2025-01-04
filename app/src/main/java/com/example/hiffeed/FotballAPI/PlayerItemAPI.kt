@@ -18,9 +18,9 @@ data class Parameters(
 )
 
 data class Player(
-    val age: Int,
     val id: Int,
     val name: String,
+    val age: Int,
     val number: Int,
     val photo: String,
     val position: String
@@ -30,7 +30,6 @@ data class Player(
 
 data class Response(
     val players: List<Player>,
-    val team: Team
 )
 
 data class Team(

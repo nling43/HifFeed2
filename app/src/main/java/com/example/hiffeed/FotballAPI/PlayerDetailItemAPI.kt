@@ -79,7 +79,7 @@ data class  Games(
     val minutes: Int,
     val number: Int,
     val position: String,
-    val rating: Int,
+    val rating: Double,
     val captain : Boolean
 )
 data class Dribbles(

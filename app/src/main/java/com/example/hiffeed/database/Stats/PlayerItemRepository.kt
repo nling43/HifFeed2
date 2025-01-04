@@ -9,8 +9,10 @@ import com.example.hiffeed.FotballAPI.Player
 import com.example.hiffeed.FotballAPI.PlayerDetailItemAPI
 import com.example.hiffeed.FotballAPI.PlayerItemAPI
 import com.example.hiffeed.FotballAPI.VolleyClient
+import com.example.hiffeed.WebScrape.PlayerItemTransferWebScrape
 import com.example.hiffeed.WebScrape.PlayerItemWebScrape
 import com.example.hiffeed.WebScrape.hif
+import com.example.hiffeed.WebScrape.transfermarkt
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +33,8 @@ class PlayerItemRepository(application: Application) {
     val attackers: LiveData<List<PlayerItem>>
     val midfielders: LiveData<List<PlayerItem>>
     var playerDetail = MutableLiveData<PlayerDetailItemAPI>()
+
+    var player  = MutableLiveData<PlayerItem>();
 
 
 
@@ -55,10 +59,10 @@ class PlayerItemRepository(application: Application) {
         CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.IO) {
                 val playerApi= ArrayList<Player>()
+                val playersTF =  mutableListOf<PlayerItemTransferWebScrape>()
                 val players =  mutableListOf<PlayerItemWebScrape>()
-                val hifJob = async {
-                    players.addAll(hif().getPlayers())
-                }
+                val tfJob = async {  playersTF.addAll(transfermarkt().getPlayers() )}
+                val hifJob = async { players.addAll(hif().getPlayers()) }
 
 
                 if (context != null) {
@@ -67,7 +71,6 @@ class PlayerItemRepository(application: Application) {
                         .subscribeWith(object : DisposableSingleObserver<PlayerItemAPI>() {
                             override fun onSuccess(t: PlayerItemAPI) {
                                 for (player in t.response[0].players) {
-
                                     playerApi.add(player)
                                 }
                             }
@@ -79,21 +82,23 @@ class PlayerItemRepository(application: Application) {
 
                         })
                 }
-
+                tfJob.await()
                 hifJob.await()
                 for (player in players){
-                    var findplayer = playerApi.find { x ->
+                    var playerFromApi = playerApi.find { x ->
+                        x.name == player.name || x.name == convertToApiName(player.name)
+                    }
+                    var playerFromTF = playersTF.find { x ->
                         x.name == player.name || x.name == convertToApiName(player.name)
                     }
                     var image = player.image
-                    if (player.image == "https://www.hif.se/wp-content/uploads/2021/03/personbild-center-top-300x300.png" && findplayer != null)
-                        image = findplayer.photo
-                    if (findplayer != null) {
-                        insert(PlayerItem(image, player.number, findplayer.id, player.position,player.name ))
-                    }
-                    else insert(PlayerItem(image, player.number, -1 , player.position,player.name ))
+                    if (image == "https://www.hif.se/wp-content/uploads/2021/03/personbild-center-top-300x300.png" && playerFromApi != null)
+                        image = playerFromApi.photo
+                    val id = playerFromApi?.id ?: -1
+                    val marketValue : String = playerFromTF?.marketValue ?: ""
+                    val contractEnd : String = playerFromTF?.contractEndDate ?: ""
 
-
+                    insert(PlayerItem(image, player.number, id , player.position,player.name,marketValue, contractEnd ))
                 }
                 isRefreshing.update { false };
 
@@ -161,7 +166,7 @@ class PlayerItemRepository(application: Application) {
         }
     }
 
-    fun getPlayer(id: Int): LiveData<PlayerItem>? {
-        return playersDao?.getPlayer(id)
+    fun getPlayer(playerItem: PlayerItem){
+         player.postValue(playerItem)
     }
 }

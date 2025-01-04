@@ -11,7 +11,7 @@ import com.example.hiffeed.database.MessageAndNews.Message.MessageItemDao
 import com.example.hiffeed.database.MessageAndNews.News.NewsItem
 import com.example.hiffeed.database.MessageAndNews.News.NewsItemDao
 
-@Database(entities = [GameItem::class, PlayerItem::class], version = 2)
+@Database(entities = [GameItem::class, PlayerItem::class], version = 3)
 
 abstract class StatsDatabase : RoomDatabase() {
     abstract fun gamesDao(): GameItemDao

@@ -19,6 +19,7 @@ class PlayerViewModel (application: Application) :
     val midfielders: LiveData<List<PlayerItem>> = repository.midfielders
     val defenders: LiveData<List<PlayerItem>> = repository.defenders
     val playerDetail : MutableLiveData<PlayerDetailItemAPI> = repository.playerDetail
+    val player : LiveData<PlayerItem> = repository.player
 
 
     val isRefreshing: StateFlow<Boolean> get() = repository.isRefreshing
@@ -35,13 +36,10 @@ class PlayerViewModel (application: Application) :
         repository.playersDetail(playerItem, 2024 );
 
     }
-    fun player(id :Int) : LiveData<PlayerItem>? {
-        return repository.getPlayer(id)
+    fun player(playerItem: PlayerItem) {
+        return repository.getPlayer(playerItem)
     }
-    fun playerDetail(playerItem: PlayerItem, season : Int) {
-        repository.playersDetail(playerItem, season );
 
-    }
 
 
 }

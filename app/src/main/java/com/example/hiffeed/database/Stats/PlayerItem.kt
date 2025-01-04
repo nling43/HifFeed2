@@ -11,9 +11,8 @@ class PlayerItem (
     @ColumnInfo(name = "Number") var Number: String,
     @ColumnInfo(name = "id") var ID: Int,
     @ColumnInfo(name = "Position") var Position: String,
-
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "Name") var Name: String,
-
-
+    @ColumnInfo(name = "marketValue") var MarketValue: String,
+    @ColumnInfo(name = "contractEndDate") var ContractEndDate: String,
     )
